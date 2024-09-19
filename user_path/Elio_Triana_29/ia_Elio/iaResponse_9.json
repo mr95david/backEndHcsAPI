@@ -1,0 +1,65 @@
+[
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": 1.5708
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": -1.5708
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": 1.5708
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": -1.5708
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": -4.7124
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": -4.7124
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": -4.7124
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": -4.7124
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear": 0,
+            "angular": 6.2832
+        }
+    }
+]

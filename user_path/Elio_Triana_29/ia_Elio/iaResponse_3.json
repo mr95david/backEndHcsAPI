@@ -1,0 +1,26 @@
+[
+    {
+        "service": "relative_move",
+        "args": {
+            "linear: 1,": 0
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear: 0,": 1
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear: -1,": 0
+        }
+    },
+    {
+        "service": "relative_move",
+        "args": {
+            "linear: 0,": -1
+        }
+    }
+]
