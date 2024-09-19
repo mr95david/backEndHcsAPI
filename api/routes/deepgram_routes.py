@@ -15,7 +15,7 @@ import os
 deepgram_bp = Blueprint('deepgram_bp', __name__)
 
 # Carga de llave de api desde la configuracion o variables de entorno
-DEEP_API = os.getenv('DEEPGRAM_API_KEY', 'Input deepgram key API')
+DEEP_API = os.getenv('DEEPGRAM_API_KEY', "Your key")
 
 # Creacion de cliente de deepgram desde el servicio propio
 deepgram_client = DeepgramService(DEEP_API)

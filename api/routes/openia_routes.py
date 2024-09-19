@@ -1,5 +1,6 @@
 # Seccion de importe de librerias
 from api.services.openia_service import OpenAIInterface
+from api.services.openai_functions import OpenAIInterfaceFunctions
 from api.utils import RECORD_FOLDER
 from api.utils import OPENIA_MODEL
 # Llamado de funciones de flask
@@ -22,10 +23,12 @@ import shutil
 openia_bp = Blueprint('openia_bp', __name__)
 
 # Carga de llave de api desde la configuracion o variables de entorno
-OPEN_API = os.getenv('OPENIA_API_KEY', 'Input openia key')
+OPEN_API = os.getenv('OPENIA_API_KEY', "Your key")
 
-# Creacion de cliente de deepgram desde el servicio propio
-openia_client = OpenAIInterface(key = OPEN_API)
+# Creacion de cliente de deepgram desde el servicio propio (Legacy)
+# openia_client = OpenAIInterface(key = OPEN_API)
+## Llamado de objeto de interface2
+openia_client = OpenAIInterfaceFunctions(key = OPEN_API)
 
 # Funcion para generacion de solicitud/orden dada por modelo llm
 @openia_bp.route("/chat_request", methods = ["POST", "GET"])
@@ -68,7 +71,7 @@ def sendOrder():
         audio_files_ = sorted(glob(os.path.join(path_audio, 'conversacion_*.wav')))
         audio_num = len(audio_files_) + 1
         audio_filename = f'conversacion_{audio_num}.wav'
-
+        
         # Mover una copia del archivo de audio a la carpeta del usuario
         new_audio_path = os.path.join(path_audio, audio_filename)
         shutil.copy(exists_audio_path, new_audio_path)
@@ -90,10 +93,15 @@ def sendOrder():
         with open(transcription_json_path, 'w', encoding='utf-8') as f:
             json.dump(conversation_data, f, ensure_ascii=False, indent=4)
         
-        # Procesamiento en chatgtp
-        generated_api_calls = openia_client.promptToApiCalls(
-            transcription, 
-            model = OPENIA_MODEL
+        # Procesamiento en chatgtp (legacy)
+        # generated_api_calls = openia_client.promptToApiCalls(
+        #     transcription, 
+        #     model = OPENIA_MODEL
+        # )
+
+        # New metod for call funcion from user request 
+        generated_api_calls = openia_client.promptToCall(
+            prompt = transcription
         )
         
         # Almacenar la respuesta del modelo en la carpeta texto
@@ -107,13 +115,14 @@ def sendOrder():
 
         thread = threading.Thread(
             target = ros_conn.sendTask,
-            args = (generated_api_calls, )
+            args = (generated_api_calls,)
         )
         thread.start()
 
         return jsonify({
             'message': 'Archivo procesado correctamente',
-            'transcription': transcription,   
+            'transcription': transcription,
+            'orders_list': generated_api_calls
         }), 200
 
     except Exception as e:

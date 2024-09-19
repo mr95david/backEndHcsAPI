@@ -1,0 +1,8 @@
+[
+    {
+        "service": "enable_object_detection",
+        "args": {
+            "data": false
+        }
+    }
+]
