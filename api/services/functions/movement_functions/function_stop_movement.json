@@ -1,0 +1,8 @@
+{
+    "type": "function",
+    "function": {
+        "name": "stop_movement",
+        "description": "Use esta função quando for solicitada a detenção do movimento do robô.",
+        "parameters": {"type": "object", "properties": {}}
+    }
+}

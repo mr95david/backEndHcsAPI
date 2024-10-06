@@ -9,7 +9,8 @@ from flask import request
 from flask import jsonify
 # Modelo de base de datos
 from api.models import users
-from api.utils import ros_conn
+#from api.utils import ros_conn
+from api.utils import ros_connection
 from api import db
 # Librerias utilitarias
 from glob import glob
@@ -23,7 +24,7 @@ import shutil
 openia_bp = Blueprint('openia_bp', __name__)
 
 # Carga de llave de api desde la configuracion o variables de entorno
-OPEN_API = os.getenv('OPENIA_API_KEY', "Your key")
+OPEN_API = os.getenv('OPENIA_API_KEY', "Open ai Key")
 
 # Creacion de cliente de deepgram desde el servicio propio (Legacy)
 # openia_client = OpenAIInterface(key = OPEN_API)
@@ -34,6 +35,7 @@ openia_client = OpenAIInterfaceFunctions(key = OPEN_API)
 @openia_bp.route("/chat_request", methods = ["POST", "GET"])
 def sendOrder():
     # Validacion general de ejecucion
+    ros_connection.clean_message()
     try:
          # Validación de entrada
         data = request.get_json()
@@ -46,6 +48,7 @@ def sendOrder():
         name = data['name']
         lastname = data['lastname']
         transcription = str(data['transcription'])
+        id_test = str(data['istest'])
 
         # Busqueda de usuario existente
         existing_user = users.query.filter_by(name = name, lastname = lastname).first()
@@ -53,6 +56,36 @@ def sendOrder():
         # Validacion de existencia de usuario
         if not existing_user:
             return jsonify({'error': 'Usuario no encontrado'}), 404
+        
+        generated_api_calls = openia_client.promptToCall(
+            prompt = transcription
+            )
+        # print(f"Respuestas del sistema generadas: {generated_api_calls}")
+        if id_test=="free_test" or id_test=="ai_test_gtp4":
+            print("Uso de modelo de ordenes de usuario")
+            ros_connection.add_task(generated_api_calls)
+        else:
+            print("Uso de modelo de ordenes de Sistema")
+            ros_connection.add_task(generated_api_calls, use_movement_system=True)
+        
+        # Generacion de solicitudes por medio de openai
+        # print("ESPERANDO EJECUCION")
+        # print(f"Llamadas generadas: {generated_api_calls}")
+        # Adicion de nuevas tareas a lista de objeto de comunicacion con ros
+        #ros_connection.add_task(generated_api_calls)
+
+        # threads = threading.enumerate()
+
+        # # Mostrar información sobre cada hilo activo
+        # print(f"Hilos activos: {len(threads)}")
+        # for thread in threads:
+        #     print(f"Hilo: {thread.name}")
+        # print(f"Lista de movimientos faltantes: {ros_connection.moviment_list}")
+        # Ejecucion de hilos para cada una de las ordenes solicitadas 
+        ros_connection.excecute_move_thread()
+        ros_connection.excecute_visual_thread()
+        ros_connection.excecute_mandatory_thread()
+        # Funcion de limpieza de mensaje
         
         # Asignacion de directorios de usuario
         path_user = existing_user.user_path
@@ -93,17 +126,6 @@ def sendOrder():
         with open(transcription_json_path, 'w', encoding='utf-8') as f:
             json.dump(conversation_data, f, ensure_ascii=False, indent=4)
         
-        # Procesamiento en chatgtp (legacy)
-        # generated_api_calls = openia_client.promptToApiCalls(
-        #     transcription, 
-        #     model = OPENIA_MODEL
-        # )
-
-        # New metod for call funcion from user request 
-        generated_api_calls = openia_client.promptToCall(
-            prompt = transcription
-        )
-        
         # Almacenar la respuesta del modelo en la carpeta texto
         existing_text_files = sorted(glob(os.path.join(path_ia, 'iaResponse_*.json')))
         text_num = len(existing_text_files) + 1
@@ -113,17 +135,14 @@ def sendOrder():
         with open(text_file_path, 'w') as f:
             json.dump(generated_api_calls, f, indent=4)
 
-        thread = threading.Thread(
-            target = ros_conn.sendTask,
-            args = (generated_api_calls,)
-        )
-        thread.start()
-
         return jsonify({
-            'message': 'Archivo procesado correctamente',
+            'message': ros_connection.message,
             'transcription': transcription,
             'orders_list': generated_api_calls
         }), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "message": 'A solicitação não foi processada.',          
+            "error": str(e)
+            }), 500

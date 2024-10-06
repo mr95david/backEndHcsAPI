@@ -2,25 +2,22 @@
     {
         "service": "relative_move",
         "args": {
-            "linear: 1,": 0
+            "linear": 0,
+            "angular": -1.5708
         }
     },
     {
         "service": "relative_move",
         "args": {
-            "linear: 0,": 1
+            "linear": 0,
+            "angular": 1.5708
         }
     },
     {
         "service": "relative_move",
         "args": {
-            "linear: -1,": 0
-        }
-    },
-    {
-        "service": "relative_move",
-        "args": {
-            "linear: 0,": -1
+            "linear": 0.1,
+            "angular": 0
         }
     }
 ]

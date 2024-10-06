@@ -4,8 +4,8 @@ from flask import Blueprint
 from flask import request
 from flask import jsonify
 # Importe de cliente de ros
-from api.utils import ros_conn
-from api.utils.ros_comm import getInitialPose
+from api.utils import ros_connection
+from api.utils.utils_functions import getInitialPose
 # Importe de libreria de ros
 import roslibpy
 
@@ -17,7 +17,7 @@ interact_bp = Blueprint('interact_bp', __name__)
 def stopAll():
     try:
         # Llamado a ejecucion de servicio
-        response = ros_conn.services["stop_all"].call(roslibpy.ServiceRequest({}))
+        response = ros_connection.services["stop_all"].call(roslibpy.ServiceRequest({}))
         #response = service_panicButton.call(roslibpy.ServiceRequest({}))
         # Salida de mesnaje de ejecucion culminada
         return jsonify({
@@ -35,7 +35,7 @@ def retinit_pose():
         # Solicitud de posicion inicial por defecto
         pose_inicial = getInitialPose()
         # Llamado a ejecucion de servicio
-        response = ros_conn.services["set_initial_pose"].call(roslibpy.ServiceRequest({"pose" : pose_inicial}))
+        response = ros_connection.services["set_initial_pose"].call(roslibpy.ServiceRequest({"pose" : pose_inicial}))
         # Salida de mesnaje de ejecucion culminada
         return jsonify({
             'message': 'Assigned position initialized successfully.',

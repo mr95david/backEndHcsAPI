@@ -1,5 +1,5 @@
 # Importe de librerias
-from api.utils.ros_comm import RosClientManager
+from api.utils.ros_communication import RosClientManagerObject
 import os
 
 # Creacion de variables propias de clase
@@ -19,4 +19,4 @@ FUNCTIONS_PATH = "./api/services/functions/movement_functions"
 OPENIA_MODEL:str = "gpt-4o-mini"
 
 # Creacion de conexion
-ros_conn = RosClientManager()
+ros_connection = RosClientManagerObject()

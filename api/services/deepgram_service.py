@@ -17,7 +17,8 @@ class DeepgramService:
         self.options_ = PrerecordedOptions(
             model = "nova-2",
             smart_format = True,
-            language = 'pt-br'
+            language = 'pt-br',
+            # pt-br
         )
 
     # Funcion de transcripcion de grabacion realizada

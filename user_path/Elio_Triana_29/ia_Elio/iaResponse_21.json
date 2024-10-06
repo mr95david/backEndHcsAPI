@@ -1,8 +1,0 @@
-[
-    {
-        "service": "object_to_detect",
-        "args": {
-            "data": "chair"
-        }
-    }
-]

@@ -18,8 +18,8 @@ for api_f in glob(f"{FUNCTIONS_PATH}/*.json"):
 # Descripcion de parametros de configuracion para modelo de cliente api
 CONFIG_AGENT: dict = {
     "model": "gpt-4o-mini",
-    "max_tokens": 1000,
-    "temperature" : 0.5,
+    "max_tokens": 8000,
+    "temperature" : 0.6,
     "stop" : None,
     "tools" : "functions_temp",
     "seed" : 42,
@@ -37,11 +37,12 @@ O sistema distingue comandos usando "depois", "então", "e" ou "próximo" para s
 """
 
 SYSTEM_DESC_PE = """
-You are an artificial intelligence tasked with controlling a mobile robot based on user requests provided in Spanish. Use the supplied tools to assist the user.
+You are an artificial intelligence tasked with controlling a mobile robot based on user requests provided in Portuguese. Use the supplied tools to assist the user.
 If the user's request cannot be fulfilled by any of the functions at your disposal, you must return the tool "reject_request".
 If the user's request is ambiguous, unclear, or inconsistent with the available functions, you must return the tool "reject_request".
-Positive values turn left, negative values turn right.
+Positive angular values turn left, negative angular values turn right.
 The system distinguishes commands using "after," "then," or "next" to sequence actions and differentiates between linear and angular movements for precise robot navigation.
-finally handle orientation changes (right, left, full turn) as angular differences in radians from -pi to pi. 
+finally handle orientation changes (right, left, full turn) as angular differences in radians from -pi to pi.
+Tens que identificar quando se faz referência a números e coordenadas. Por exemplo, quando se usa 'dois zero', isso corresponde a (2, 0). O mesmo se aplica para combinações como 'três três', que corresponde a (3, 3).
 """
 # To fulfill these requests, you have access to a predefined set of functions; you can only respond by outputting the exact structure—function name and required parameters—of one of these available functions.

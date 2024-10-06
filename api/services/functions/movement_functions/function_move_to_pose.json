@@ -2,7 +2,7 @@
     "type": "function",
     "function": {
         "name": "move_to_pose",
-        "description": "Especifica as coordenadas e a orientação precisas no plano onde o robô deve se mover.",
+        "description": "Especifica as coordenadas no plano onde o robô deve se mover.",
         "parameters": {
             "type": "object",
             "properties":{
