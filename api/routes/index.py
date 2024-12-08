@@ -1,13 +1,16 @@
 # Import libraries
 from flask import Blueprint
 from flask import jsonify
+from flask import render_template
+from flask import send_from_directory
+from flask import Response
+import os
 # from api.model.welcome import WelcomeModel
 
 # Asignacion de main
-index = Blueprint('main', __name__)
+index = Blueprint('main', __name__, static_folder='static', template_folder='index.html')
 
-# Creacion de ruta
-@index.route('/')
+
 @index.route('/index')
 def getIndex():
     try:
@@ -17,3 +20,7 @@ def getIndex():
             }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@index.route('/')
+def getHome():
+    return render_template('index.html')
